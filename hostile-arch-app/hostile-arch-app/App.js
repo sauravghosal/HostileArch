@@ -56,7 +56,7 @@ export default class App extends Component {
           />
         )}
 
-        {<Camera changeBase64={this.changeBase64.this(bind)} />}
+        {<Camera changeBase64={this.changeBase64.bind(this)} />}
       </View>
     );
   }
