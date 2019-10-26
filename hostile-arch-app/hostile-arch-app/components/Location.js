@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 
 export default class Location extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       ready: false,
       where: { lat: null, lng: null },
@@ -29,8 +29,6 @@ export default class Location extends Component {
       ready: true,
       where: { lat: position.coords.latitude, lng: position.coords.longitude }
     });
-
-    // updates lat/long state in app
 
     this.props.changeLat(this.state.where.lat);
     this.props.changeLong(this.state.where.lng);

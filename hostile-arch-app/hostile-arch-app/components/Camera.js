@@ -1,9 +1,8 @@
 import * as React from "react";
-import { Button, Image, View } from "react-native";
+import { Button, Image, View, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
-import styles from "./styles";
 
 export default class Camera extends React.Component {
   constructor(props) {
@@ -15,29 +14,47 @@ export default class Camera extends React.Component {
 
   selectPicture = async () => {
     await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    const { cancelled, uri } = await ImagePicker.launchImageLibraryAsync({
-      aspect: 1,
+    const options = {
+      mediaTypes: ImagePicker.MediaTypeOptions.Image,
       allowsEditing: true,
+      aspect: [4, 3],
       base64: true
-    });
-    this.setState({ image: uri });
-    if (!cancelled) this.setState({ image: uri });
+    };
+    let result = await ImagePicker.launchImageLibraryAsync(options);
+
+    this.props.changeBase64(result.base64);
+
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+    }
   };
 
   takePicture = async () => {
     await Permissions.askAsync(Permissions.CAMERA);
-    const { cancelled, uri } = await ImagePicker.launchCameraAsync({
-      base64: true,
-      // change
-      quality: 0.75
-    });
-    console.log(uri);
+    const options = {
+      mediaTypes: ImagePicker.MediaTypeOptions.Image,
+      allowsEditing: true,
+      aspect: [4, 3],
+      base64: true
+    };
+    let result = await ImagePicker.launchCameraAsync(options);
+    this.props.changeBase64(result.base64);
+
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+    }
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <Image style={styles.image} source={{ uri: this.state.image }} />
+        {this.state.image !== null && (
+          <Image
+            style={{ width: 400, height: 400 }}
+            source={{ uri: this.state.image }}
+          />
+        )}
+        {console.log(this.state.image)}
         <View style={styles.row}>
           <Button title="Gallery" onPress={this.selectPicture}>
             Gallery
@@ -50,3 +67,18 @@ export default class Camera extends React.Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F5FCFF"
+  },
+  image: {
+    flex: 1,
+    width: null,
+    height: null,
+    resizeMode: "contain"
+  }
+});
