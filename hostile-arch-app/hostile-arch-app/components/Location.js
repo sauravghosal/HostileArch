@@ -30,6 +30,8 @@ export default class Location extends Component {
       where: { lat: position.coords.latitude, lng: position.coords.longitude }
     });
 
+    // updates lat/long state in app
+
     this.props.changeLat(this.state.where.lat);
     this.props.changeLong(this.state.where.lng);
   };

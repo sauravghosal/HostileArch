@@ -10,11 +10,18 @@ export default class App extends Component {
     super(props);
     this.state = {
       camera: false,
+      imgBase64: null,
       location: false,
       lat: null,
       long: null
     };
   }
+
+  changeBase64 = newBase64 => {
+    this.setState({
+      imgBase64: newBase64
+    });
+  };
 
   changeLat = newLat => {
     this.setState({
@@ -34,12 +41,6 @@ export default class App extends Component {
     });
   };
 
-  openCamera = event => {
-    this.setState({
-      camera: true
-    });
-  };
-
   render() {
     return (
       <View style={styles.container}>
@@ -50,17 +51,12 @@ export default class App extends Component {
         ></Button>
         {this.state.location === true && (
           <Location
-            lat={this.state.lat}
-            long={this.state.long}
             changeLat={this.changeLat.bind(this)}
             changeLong={this.changeLong.bind(this)}
           />
         )}
-        <Text style={styles.welcome}>
-          Longitude: {this.state.long}, Latitude: {this.state.lat}
-        </Text>
-        <Button title="Take Picture" onPress={e => this.openCamera(e)} />
-        {this.state.camera === true && <Camera />}
+
+        {<Camera changeBase64={this.changeBase64.this(bind)} />}
       </View>
     );
   }

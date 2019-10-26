@@ -1,83 +1,57 @@
-import React, { Component } from "react";
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Image
-} from "react-native";
-import ImagePicker from "react-native-image-picker";
-import RNFetchBlob from "rn-fetch-blob";
-const options = {
-  title: "my pic app",
-  takePhotoButtonTitle: "Take photo with your camera",
-  chooseFromLibraryButtonTitle: "Choose photo from library"
-};
-export default class App extends Component<Props> {
+import * as React from "react";
+import { Button, Image, View } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import Constants from "expo-constants";
+import * as Permissions from "expo-permissions";
+
+export default class Camera extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      avatarSource: null,
-      pic: null
+    state = {
+      image: null
     };
   }
-  openCamera = () => {
-    alert("clicked");
-
-    ImagePicker.showImagePicker(options, response => {
-      console.log("Response = ", response);
-
-      if (response.didCancel) {
-        console.log("User cancelled image picker");
-      } else if (response.error) {
-        console.log("Image Picker Error: ", response.error);
-      } else {
-        let source = { uri: response.uri };
-        this.setState({
-          avatarSource: source,
-          pic: response.data
-        });
-      }
-    });
-  };
 
   render() {
+    let { image } = this.state;
+
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-
-        <Image
-          source={this.state.avatarSource}
-          style={{ width: "100%", height: 300, margin: 10 }}
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Button
+          title="Pick an image from camera roll"
+          onPress={this._pickImage}
         />
-
-        <TouchableOpacity
-          style={{ backgroundColor: "green", margin: 10, padding: 10 }}
-          onPress={this.openCamera}
-        >
-          <Text style={{ color: "#fff" }}>Select Image</Text>
-        </TouchableOpacity>
+        {image && (
+          <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+        )}
       </View>
     );
   }
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF"
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: "center",
-    margin: 10
-  },
-  instructions: {
-    textAlign: "center",
-    color: "#333333",
-    marginBottom: 5
+  componentDidMount() {
+    this.getPermissionAsync();
   }
-});
+
+  getPermissionAsync = async () => {
+    if (Constants.platform.ios) {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+      }
+    }
+  };
+
+  _pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      base64: true
+    });
+
+    console.log(result);
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+    }
+  };
+}
