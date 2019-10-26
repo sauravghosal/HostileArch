@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, Text, View, Button, Alert } from "react-native";
 import Picture from "./components/Picture";
 import Email from "./components/Email";
-import Location from "./components/Location"
+import Location from "./components/Location";
 
 export default class App extends Component {
   constructor(props) {
@@ -23,7 +23,7 @@ export default class App extends Component {
           onPress: () => console.log("Cancel Pressed"),
           style: "cancel"
         },
-        { text: "OK", onPress: () => console.log("OK Pressed")}
+        { text: "OK", onPress: () => console.log("OK Pressed") }
       ],
       { cancelable: false }
     );
@@ -31,24 +31,9 @@ export default class App extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Picture />
-        <Email />
-        <Button
-          title="Press me"
-          onPress={e => this.handleClick(e)}
-          value="pressed"
-        />
+      <View>
+        <Location />
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
-  }
-});

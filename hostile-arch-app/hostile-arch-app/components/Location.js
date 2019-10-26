@@ -1,51 +1,68 @@
-import React, {Component} from 'react'
-import {View,Text} from 'react-native'
+import React, { Component } from "react";
+import { View, Text, StyleSheet } from "react-native";
 
-type Props = {};
-export default class Location extends Component<Props> {
-    constructor(props) {
-        super(props)
+export default class Location extends Component {
+  constructor() {
+    super();
+    this.state = {
+      ready: false,
+      where: { lat: null, lng: null },
+      error: null
+    };
+  }
+  componentDidMount() {
+    let geoOptions = {
+      enableHighAccuracy: true,
+      timeOut: 20000,
+      maximumAge: 60 * 60 * 24
+    };
+    this.setState({ ready: false, error: null });
+    navigator.geolocation.getCurrentPosition(
+      this.geoSuccess,
+      this.geoFailure,
+      geoOptions
+    );
+  }
 
-        this.state = {
-            initialPosition: {
-                latitude: 0,
-                longitude: 0,
-            },
-            markerPosition: {
-                latitude: 0,
-                longitude: 0
-            }
-        }
-    }
+  geoSuccess = position => {
+    console.log(position.coords);
 
-    componentDidMount() {
-        this.watchId = navigator.geolocation.watchPosition(
-            (position) => {
-                this.setState({
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                });
-            },
-            (error) => {
-                this.setState({ error: error.message})
-            },
-            { enableHighAccuracy: false, timeout: 1, maximumAge: 1, distanceFilter: 1}
-        )
-    }
+    this.setState({
+      ready: true,
+      where: { lat: position.coords.latitude, lng: position.coords.longitude }
+    });
 
-    render() {
-        return (
-            <View>
-                { (this.state.latitude && this.state.longitude) 
-                ? 
-                <Text> My location is: { this.state.latitude }, { this.state.longitude }</Text>
-                :
-                <Text>Location services not enabled</Text>
-            }
-            </View>
-        )
-    }
-
-
-
+    console.log(this.state.where);
+    console.log(this.state.ready);
+  };
+  geoFailure = err => {
+    this.setState({ error: err.message });
+  };
+  render() {
+    return (
+      <View style={styles.container}>
+        {!this.state.ready && (
+          <Text style={styles.big}>Using Geolocation in React Native.</Text>
+        )}
+        {this.state.error && <Text style={styles.big}>{this.state.error}</Text>}
+        {this.state.ready && (
+          <Text style={styles.big}>{`Latitude: ${this.state.where.lat}
+            Longitude: ${this.state.where.lng}`}</Text>
+        )}
+      </View>
+    );
+  }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#000000",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  big: {
+    fontSize: 48,
+    color: "#000000"
+  }
+});
