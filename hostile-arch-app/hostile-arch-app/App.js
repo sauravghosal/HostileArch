@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, Text, View, Button, Alert } from "react-native";
 import Picture from "./components/Picture";
 import Email from "./components/Email";
+import Location from "./components/Location"
 
 export default class App extends Component {
   constructor(props) {
@@ -22,7 +23,7 @@ export default class App extends Component {
           onPress: () => console.log("Cancel Pressed"),
           style: "cancel"
         },
-        { text: "OK", onPress: () => console.log("OK Pressed") }
+        { text: "OK", onPress: () => console.log("OK Pressed")}
       ],
       { cancelable: false }
     );
