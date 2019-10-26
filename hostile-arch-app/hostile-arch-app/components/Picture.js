@@ -12,6 +12,7 @@ function Picture(props) {
     <View>
       <Text>Click to upload picture</Text>
       {/* Figure out icons here */}
+      <FontAwesome icon={BrandIcons.github} />
     </View>
   );
 }
