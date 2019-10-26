@@ -15,6 +15,5 @@ def sendEmail(receiver_email, message):
 
 def main():
     sendEmail("sruthisudhakar81@gmail.com", "yo")
-    reverseGeocode()
 
 if __name__ == "__main__": main()
