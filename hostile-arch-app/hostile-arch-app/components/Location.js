@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 
 export default class Location extends Component {
   constructor() {
@@ -32,24 +32,26 @@ export default class Location extends Component {
       where: { lat: position.coords.latitude, lng: position.coords.longitude }
     });
 
-    console.log(this.state.where);
-    console.log(this.state.ready);
+    this.props.changeLat(this.state.lat);
+    this.props.changeLong(this.state.long);
   };
   geoFailure = err => {
     this.setState({ error: err.message });
   };
   render() {
     return (
-      <View style={styles.container}>
+      <>
         {!this.state.ready && (
-          <Text style={styles.big}>Using Geolocation in React Native.</Text>
+          <ActivityIndicator size="large" color="#0000ff" />
         )}
-        {this.state.error && <Text style={styles.big}>{this.state.error}</Text>}
+        {this.state.error && (
+          <Text style={styles.welcome}>{this.state.error}</Text>
+        )}
         {this.state.ready && (
-          <Text style={styles.big}>{`Latitude: ${this.state.where.lat}
+          <Text style={styles.welcome}>{`Latitude: ${this.state.where.lat}
             Longitude: ${this.state.where.lng}`}</Text>
         )}
-      </View>
+      </>
     );
   }
 }
@@ -61,8 +63,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
-  big: {
-    fontSize: 48,
-    color: "#000000"
+  welcome: {
+    fontSize: 20,
+    textAlign: "center",
+    margin: 10
   }
 });

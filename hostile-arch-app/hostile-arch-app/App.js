@@ -8,15 +8,28 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      location: false
+      location: false,
+      lat: null,
+      long: null
     };
   }
+
+  changeLat = newLat => {
+    this.setState({
+      lat: newLat
+    });
+  };
+
+  changeLong = newLong => {
+    this.setState({
+      long: newLong
+    });
+  };
 
   handleClick = event => {
     this.setState({
       location: true
     });
-    console.log("clicked!");
   };
 
   render() {
@@ -27,7 +40,18 @@ export default class App extends Component {
           title="Get Location"
           onPress={e => this.handleClick(e)}
         ></Button>
-        {this.state.location === true && <Location />}
+        {this.state.location === true && (
+          <Location
+            lat={this.state.lat}
+            long={this.state.long}
+            changeLat={this.changeLat.bind(this)}
+            changeLong={this.changeLong.bind(this)}
+          />
+        )}
+
+        <Text style={styles.welcome}>
+          Longitude: {this.state.long}, Latitude: {this.state.lat}
+        </Text>
       </View>
     );
   }
