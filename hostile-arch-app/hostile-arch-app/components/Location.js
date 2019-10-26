@@ -57,7 +57,7 @@ export default class Location extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#F5FCFF",
     alignItems: "center",
     justifyContent: "center"
   },
