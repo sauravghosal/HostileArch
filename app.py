@@ -11,11 +11,13 @@ from email.mime.text import MIMEText
 from email.mime.image     import MIMEImage
 from email.header         import Header
 import base64
+import tweepy
 
 app = Flask(__name__)
 
 @app.route("/posting_email_info", methods=['POST'])
 def hello():
+    #Get JSON information from request
     msg_body = request.get_json()
     text = msg_body['text']
     loc_x = float(msg_body['x'])
@@ -24,6 +26,7 @@ def hello():
     pic = decodeAndSaveLocally(pic_string)
     filer_email = msg_body['filer_email']
     tup = getRepresentative(loc_x, loc_y)
+
     if tup is None:
         return "Representative not found"
     else:
@@ -119,6 +122,26 @@ def reverseGeocode(coordinates):
 def decodeAndSaveLocally(encoded_string):
     with open("temp.png", "wb") as fh:
         fh.write(base64.decodebytes(encoded_string))
+def postTweet():
+    twitter_auth_keys = {
+        "consumer_key"        : "REPLACE_THIS_WITH_YOUR_CONSUMER_KEY",
+        "consumer_secret"     : "REPLACE_THIS_WITH_YOUR_CONSUMER_SECRET",
+        "access_token"        : "REPLACE_THIS_WITH_YOUR_ACCESS_TOKEN",
+        "access_token_secret" : "REPLACE_THIS_WITH_YOUR_ACCESS_TOKEN_SECRET"
+    }
+
+    auth = tweepy.OAuthHandler(
+            twitter_auth_keys['consumer_key'],
+            twitter_auth_keys['consumer_secret']
+            )
+    auth.set_access_token(
+            twitter_auth_keys['access_token'],
+            twitter_auth_keys['access_token_secret']
+            )
+    api = tweepy.API(auth)
+
+    tweet = "Another day, another #scifi #book and a cup of #coffee"
+    status = api.update_status(status=tweet)
 
 if __name__ == '__main__':
     dist_id = 'cc6a869374434bee9fefad45e291b779'
