@@ -3,11 +3,13 @@ import { StyleSheet, Text, View, Button, Alert } from "react-native";
 import Picture from "./components/Picture";
 import Email from "./components/Email";
 import Location from "./components/Location";
+import Camera from "./components/Camera";
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      camera: false,
       location: false,
       lat: null,
       long: null
@@ -32,6 +34,12 @@ export default class App extends Component {
     });
   };
 
+  openCamera = event => {
+    this.setState({
+      camera: true
+    });
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -48,10 +56,11 @@ export default class App extends Component {
             changeLong={this.changeLong.bind(this)}
           />
         )}
-
         <Text style={styles.welcome}>
           Longitude: {this.state.long}, Latitude: {this.state.lat}
         </Text>
+        <Button title="Take Picture" onPress={e => this.openCamera(e)} />
+        {this.state.camera === true && <Camera />}
       </View>
     );
   }
@@ -71,7 +80,6 @@ const styles = StyleSheet.create({
   },
   instructions: {
     textAlign: "center",
-    color: "#33333",
     marginBottom: 5
   }
 });

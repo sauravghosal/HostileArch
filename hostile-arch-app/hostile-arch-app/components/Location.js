@@ -25,15 +25,13 @@ export default class Location extends Component {
   }
 
   geoSuccess = position => {
-    console.log(position.coords);
-
     this.setState({
       ready: true,
       where: { lat: position.coords.latitude, lng: position.coords.longitude }
     });
 
-    this.props.changeLat(this.state.lat);
-    this.props.changeLong(this.state.long);
+    this.props.changeLat(this.state.where.lat);
+    this.props.changeLong(this.state.where.lng);
   };
   geoFailure = err => {
     this.setState({ error: err.message });
