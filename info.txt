@@ -1,0 +1,57 @@
+DNS Servernames
+ns1.domaincom-default.domainparkingserver.net
+ns2.domaincom-default.domainparkingserver.net
+
+API Key for reverse geo-encoding
+AIzaSyACXhXaxtZ3mw7-2d2vjIckekoE4lQbY48
+
+test_esri.py:
+----------------------------------------
+from arcgis.gis import GIS
+from arcgis import geometry
+from arcgis import features
+
+dist_id = 'cc6a869374434bee9fefad45e291b779'
+gis = GIS()
+item = gis.content.get(dist_id)
+feature_layer = item.layers[0]
+
+point = geometry.Point({"x": -84.4200739, "y": 33.7708534, "spatialReference" :{"wkid":4326}})
+dist_filter = geometry.filters.intersects(point)
+q = feature_layer.query(where='1=1', geometry_filter=dist_filter)
+print(q.features[0].attributes["NAME"])
+
+reverse_geocode.py:
+------------------------------------
+import requests
+import googlemaps
+from datetime import datetime
+
+
+def reverseGeocode(coordinates):
+    gmaps = googlemaps.Client(key="AIzaSyACXhXaxtZ3mw7-2d2vjIckekoE4lQbY48")
+
+    # Look up an address with reverse geocoding
+    result = gmaps.reverse_geocode(coordinates)
+    ans = result[0]["formatted_address"]
+    print(ans)
+
+def main():
+    reverseGeocode((40.714224, -73.961452))
+
+if __name__ == "__main__": main()
+
+getLocationInformation.py
+----------------------------------------
+#use esri for this
+
+from arcgis.gis import GIS
+dist_id = 'cc6a869374434bee9fefad45e291b779'
+gis = GIS()
+item = gis.content.get(dist_id)
+item
+#this item thingy has everything we need, I just need to know how to use it
+#and also how big is it? ASK Esri people tomorrow
+
+for reverse geocoding also make sure you do
+pip install reverse_geocoder
