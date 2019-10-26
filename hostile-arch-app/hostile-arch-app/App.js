@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Button, Alert } from "react-native";
 import Picture from "./components/Picture";
 import Email from "./components/Email";
 import Location from "./components/Location";
+import Camera from "./components/Camera"
 
 export default class App extends Component {
   constructor(props) {
@@ -28,6 +29,12 @@ export default class App extends Component {
           onPress={e => this.handleClick(e)}
         ></Button>
         {this.state.location === true && <Location />}
+
+        <Button
+          title="Take Picture"
+          onPress={e => this.handleClick(e)}
+        ></Button>
+        {<Camera />}
       </View>
     );
   }
@@ -47,7 +54,6 @@ const styles = StyleSheet.create({
   },
   instructions: {
     textAlign: "center",
-    color: "#33333",
     marginBottom: 5
   }
 });
