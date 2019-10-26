@@ -18,7 +18,8 @@
     "react-native-fontawesome": "^7.0.0",
     "react-native-get-location": "^1.2.0",
     "react-native-web": "^0.11.7",
-    "yarn": "^1.19.1"
+    "yarn": "^1.19.1",
+    "expo-image-picker": "~7.0.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^7.1.0"

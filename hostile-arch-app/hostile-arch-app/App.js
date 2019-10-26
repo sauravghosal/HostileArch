@@ -17,7 +17,6 @@ export default class App extends Component {
     this.setState({
       location: true
     });
-    console.log("clicked!");
   };
 
   render() {
@@ -30,10 +29,6 @@ export default class App extends Component {
         ></Button>
         {this.state.location === true && <Location />}
 
-        <Button
-          title="Take Picture"
-          onPress={e => this.handleClick(e)}
-        ></Button>
         {<Camera />}
       </View>
     );
