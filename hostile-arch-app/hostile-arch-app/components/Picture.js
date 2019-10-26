@@ -4,13 +4,14 @@ import FontAwesome, {
   SolidIcons,
   RegularIcons,
   BrandIcons,
-  parseIconName
+  parseIconFromClassName
 } from "react-native-fontawesome";
 
 function Picture(props) {
   return (
     <View>
-      <FontAwesome icon={parseIconFromClassName("fas fa-chevron-left")} />
+      <Text>Click to upload picture</Text>
+      {/* Figure out icons here */}
     </View>
   );
 }
