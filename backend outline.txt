@@ -1,1 +1,58 @@
 what will the backend do
+
+input:
+
+JSON
+{
+    location: xx.xxxxxxxxxxx, yy.yyyyyyyyyyyy
+    text: "blah blah blah"
+    email: null or has one (no need for a boolean value)
+    picture : no eye deer
+}
+
+what to do:
+
+use the location to
+    - tag the location of the picture (maybe with an address, defo with coordinates, maybe link to google maps, maybe use maps api)
+    - find the congressional district the picture was taken in
+    - find the name of the congressperson in that district
+
+text
+    - used in the email
+
+email
+    - if included, cc the citizen to the email chain
+
+picture
+    - decode the picture
+    - attach picture in email
+
+Other things we DO need to solve:
+    - how to decode a picture from a json
+    - how to query google maps API (not imminent)
+    - how to find the district and congressperson
+    - how to send email (how to connect to an account)
+    - register a domain name
+    - set up flask api on the cloud
+
+
+Output:
+    - return if it was successful or not
+
+stupid sudocode
+
+@app.route("/")
+def phatfunc():
+    try:
+        district, repemail = getLocationInformation(x, y);
+        streetaddy = moreInfo(x,y);
+
+        picture = decodePicture();  //cant do this until saurav and tashi get us the encoded picture
+
+        response = makeEmail(district, repemail, streatddy, picture) //figure out how to send emails
+        sendEmail(email, response);
+
+        return 100
+    except:
+        return 200
+
