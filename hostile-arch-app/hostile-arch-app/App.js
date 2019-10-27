@@ -1,16 +1,11 @@
 import React, { Component } from "react";
 import {
   StyleSheet,
-  Text,
   View,
   Button,
-  Alert,
   TextInput,
-  ScrollView,
   Animated,
-  Keyboard,
-  KeyboardAvoidingView,
-  TextTranslateInput
+  KeyboardAvoidingView
 } from "react-native";
 import Location from "./components/Location";
 import Camera from "./components/Camera";
@@ -80,6 +75,10 @@ export default class App extends Component {
         enabled
       >
         <Camera changeBase64={this.changeBase64.bind(this)} />
+        <Location
+          changeLat={this.changeLat.bind(this)}
+          changeLong={this.changeLong.bind(this)}
+        />
         <View style={styles.textInput}>
           <TextInput
             placeholder="Enter image description here!"

@@ -37,20 +37,7 @@ export default class Location extends Component {
     this.setState({ error: err.message });
   };
   render() {
-    return (
-      <>
-        {!this.state.ready && (
-          <ActivityIndicator size="large" color="#0000ff" />
-        )}
-        {this.state.error && (
-          <Text style={styles.welcome}>{this.state.error}</Text>
-        )}
-        {this.state.ready && (
-          <Text style={styles.welcome}>{`Latitude: ${this.state.where.lat}
-            Longitude: ${this.state.where.lng}`}</Text>
-        )}
-      </>
-    );
+    return <></>;
   }
 }
 
