@@ -11,6 +11,7 @@ from email.mime.text import MIMEText
 from email.mime.image     import MIMEImage
 from email.header         import Header
 import base64
+from representatives import dict_of_contacts
 
 app = Flask(__name__)
 
@@ -18,6 +19,7 @@ app = Flask(__name__)
 def hello():
     msg_body = request.get_json()
     text = msg_body['text']
+
     loc_x = float(msg_body['x'])
     loc_y = float(msg_body['y'])
     pic_string = bytearray(msg_body['picture_base_64'].encode())
@@ -41,17 +43,18 @@ def first():
     return "Hello World"
 
 def getRepresentative(x, y):
+    dist_id = '952b820452f545adb76ecd679981d3ae'
+    gis = GIS()
+    item = gis.content.get(dist_id)
+    feature_layer = item.layers[0]
     pt = geometry.Point({"x": x, "y": y, "spatialReference" :{"wkid":4326}})
     dist_filter = geometry.filters.intersects(pt)
     q = feature_layer.query(where='1=1', geometry_filter=dist_filter)
     if len(q.features) == 0:
         return None
     else:
-        attributes = q.features[0].attributes
-        name = attributes['LAST_NAME']
-        state = attributes['STATE_ABBR']
-        district = attributes['CDFIPS']
-        ret_tup = (state, district, name)
+        district = q.features[0].attributes['DISTRICT']
+
         return ret_tup
 
 def sendEmail(receiver_email, message):
@@ -61,7 +64,7 @@ def sendEmail(receiver_email, message):
 
     # Create message container - the correct MIME type is multipart/alternative.
     msg = MIMEMultipart('alternative')
-    msg['Subject'] = "99!!!!!!!"
+    msg['Subject'] = "Help The Hobos " + str(datetime.datetime.now())
     msg['From'] = sender_email
     msg['To'] = receiver_email
 
@@ -125,8 +128,5 @@ def decodeAndSaveLocally(encoded_string):
         fh.write(base64.decodebytes(encoded_string))
 
 if __name__ == '__main__':
-    dist_id = 'cc6a869374434bee9fefad45e291b779'
-    gis = GIS()
-    item = gis.content.get(dist_id)
-    feature_layer = item.layers[0]
+    print(len(dict_of_contacts))
     app.run(debug=True)

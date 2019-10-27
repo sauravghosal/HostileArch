@@ -11,6 +11,7 @@ from email.mime.text import MIMEText
 from email.mime.image     import MIMEImage
 from email.header         import Header
 import base64
+from representatives import emails
 
 app = Flask(__name__)
 
