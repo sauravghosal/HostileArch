@@ -56,3 +56,13 @@ def phatfunc():
     except:
         return 200
 
+
+Work left to do on backend:
+
+write a good email
+figure out CCing people
+figure out timestamp
+figure out how to change email based on if the sender sends a name
+figure out how to put the picture in the email
+clean up all the email code
+make it faster???
