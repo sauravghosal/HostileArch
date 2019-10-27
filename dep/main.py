@@ -1,20 +1,22 @@
+from email.mime.multipart import MIMEMultipart
+from representatives import dict_of_contacts
+from email.mime.image import MIMEImage
+from email.mime.text import MIMEText
+from datetime import datetime as dt
 from flask import Flask , request
-import smtplib, ssl
-from arcgis.gis import GIS
+from email.header import Header
+from datetime import datetime
 from arcgis import geometry
 from arcgis import features
-import requests
+from arcgis.gis import GIS
+import smtplib, ssl
 import googlemaps
-from datetime import datetime
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.image     import MIMEImage
-from email.header         import Header
+import requests
 import base64
-from representatives import dict_of_contacts
 
 app = Flask(__name__)
-dist_id = 'cc6a869374434bee9fefad45e291b779'
+
+dist_id = '952b820452f545adb76ecd679981d3ae'
 gis = GIS()
 item = gis.content.get(dist_id)
 feature_layer = item.layers[0]
@@ -43,10 +45,46 @@ def hello():
             return "Unable to find address using reverse geocoding"
         else:
             email_body = generate_body(pic, address, representative_last_name, caption)
-            sendEmail("amanj120@gmail.com", send)
+            sendEmail(list("amanj120@gmail.com"), email_body)
             return "Success" + str(sender_email.find('@') != -1)
 
 def generate_body(pic, address, representative_last_name, caption):
+    html = '''
+    <html>
+      <head>
+        <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300&display=swap" rel="stylesheet">
+        <style>
+          body {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 24px;
+          }
+        </style>
+      </head>
+      <body>
+        <br>
+        <p>Dear Representative ______rep______, </p>
+        <p>We commonly find ourselves using rhetoric like "the homeless epidemic", and other
+        phrases that dehumanize the homeless. However, people wiothout homes are still people,
+        and we believe that they deserve the basic right to have a place to sleep.</p>
+        <p>However, we find ourselves in a saddening situation, where people believe it is alright
+        to create structures in public places that cause discomfort and humiliation. We believe these
+        "Hostile Structures" serve no positive purpose to society and need to be removed and replaced
+        with kinder, more considerate things.</p>
+        <p>A citizen that you represent looked at this space and understood that it is something that is unfair and needs fixing.
+        They found this piece of hostile architecture at ______adr______
+        We at fixthis.space are simply deliverers of their message, and this is what they have to say:</p>
+        <p>______msg______</p>
+        <p>______pic______</p>
+        <p>We are all human, and we all deserve respect</p>
+        <p>Sincerely,</p>
+        <p>A group of concerned citizens</p>
+      </body>
+    </html>
+    '''
+    html.replace('______rep______', representative_last_name)
+    html.replace('______msg______', caption)
+    html.replace('______adr______', address)
+    return html
 
 
 def getDistrict(x, y):
@@ -57,41 +95,22 @@ def getDistrict(x, y):
         return None
     else:
         return int(q.features[0].attributes['DISTRICT'])
-        '''
-        attributes = q.features[0].attributes
-        name = attributes['LAST_NAME']
-        state = attributes['STATE_ABBR']
-        district = attributes['CDFIPS']
-        ret_tup = (state, district, name)
-        return ret_tup
-        '''
 
-def sendEmail(receiver_email, message):
+def sendEmail(receiver_emails : list, message):
 
     sender_email = "hostilearchitectureawareness@gmail.com"
     password = "hostilearch123"
 
     # Create message container - the correct MIME type is multipart/alternative.
     msg = MIMEMultipart('alternative')
-    msg['Subject'] = "99!!!!!!!"
+    subject_line = "A citizen wants your help to fix this space: " + dt.now().strftime("%A %B %d, %Y %I:%M %p")
+    msg['Subject'] = subject_line
     msg['From'] = sender_email
-    msg['To'] = receiver_email
+    msg['To'] = receiver_emails
 
     # Create the body of the message (a plain-text and an HTML version).
     #text = "Hi!\nHow are you?\nHere is the link you wanted:\nhttp://www.python.org"
-    html = """\
-    <html>
-      <head></head>
-      <body>
-        <img src="cid:image1">
-        <p>99<br>
-           NINEINEEEEE<br>
-           WE LOVE BROOKLYN NINENINEEEE WATCH THIS PLEASE <a href="https://www.youtube.com/watch?v=zE5sEbEehNo">link</a>!!!!
-        </p>
-        <p>""" + message +  """
-      </body>
-    </html>
-    """
+
 
     # Encapsulate the plain and HTML versions of the message body in an
     # 'alternative' part, so message agents can decide which they want to display.
@@ -102,7 +121,7 @@ def sendEmail(receiver_email, message):
     msg.attach(msgText)
 
     # We reference the image in the IMG SRC attribute by the ID we give it below
-    msgText = MIMEText(html, 'html')
+    msgText = MIMEText(message, 'html')
     msg.attach(msgText)
 
     # This example assumes the image is in the current directory
@@ -120,7 +139,7 @@ def sendEmail(receiver_email, message):
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
         server.login(sender_email, password)
         server.sendmail(
-            sender_email, receiver_email, msg.as_string()
+            sender_email, receiver_emails, msg.as_string()
         )
     print ("success")
     return;
