@@ -45,8 +45,13 @@ def homepage():
 def mainfunction():
     #extract the location from JSON, use it to get District
     request_body = request.get_json()
-    loc_x = float(request_body['x'])
-    loc_y = float(request_body['y'])
+
+    try:
+        loc_x = float(request_body['x'])
+        loc_y = float(request_body['y'])
+    except:
+        return "Invalid Location Information Given"
+
     district = getDistrict(loc_x, loc_y)
 
     if district is None:
