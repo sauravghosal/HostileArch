@@ -58,7 +58,7 @@ export default class Camera extends React.Component {
           {/* <Button title="Camera" onPress={this.takePicture}>
             Camera
           </Button> */}
-          <Button title="Take or Select Photo" onPress={this.selectPicture}>
+          <Button title="Take Photo" onPress={this.takePicture}>
             Gallery
           </Button>
         </View>

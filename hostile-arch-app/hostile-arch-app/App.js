@@ -87,10 +87,31 @@ export default class App extends Component {
         enabled
       >
         <Camera changeBase64={this.changeBase64.bind(this)} />
-        <Button
+        {/* <Button
           title="Get Location"
           onPress={event => this.setState({ location: true })}
-        ></Button>
+        ></Button> */}
+        {this.state.location ? (<TouchableOpacity title="Location Button" onPress={event => {
+          this.setState({ location: true })
+          }} 
+          style={{ backgroundColor: 'lightgreen', fontColor: 'white', borderWidth: 0, height: 42, width: "70%",
+          justifyContent: "center", alignItems: "center", alignSelf: "center", borderRadius: 20, marginBottom: 50,
+          }}>
+          
+          <Text style={{color: 'white'}}> Received! </Text>
+          
+        </TouchableOpacity>) : (
+        <TouchableOpacity title="Location Button" onPress={event => {
+          this.setState({ location: true })
+          }} 
+          style={{ backgroundColor: 'royalblue', fontColor: 'white', borderWidth: 0, height: 42, width: "70%",
+          justifyContent: "center", alignItems: "center", alignSelf: "center", borderRadius: 20, marginBottom: 50,
+          }}>
+          
+          <Text style={{color: 'white'}}> Get Location </Text>
+          
+        </TouchableOpacity>)}
+
         {this.state.location === true && (
           <Location
             changeLat={this.changeLat.bind(this)}
@@ -110,15 +131,35 @@ export default class App extends Component {
           />
           <TextInput
             placeholder="Enter your name"
-            style={styles.email}
+            style={styles.name}
             onChangeText={text => this.setState({ name: text })}
           />
         </View>
         {/* <Button title="Submit" onPress={this.submit}></Button> */}
-        <TouchableOpacity title="Submit" onPress={this.submit} style={{ backgroundImage: "../assets/blue.png", borderWidth: 1, height: 42, width: "70%",
+        {this.state.location ? (<TouchableOpacity title="Location Button" onPress={event => {
+          this.setState({ location: true })
+          }} 
+          style={{ backgroundColor: 'lightgreen', fontColor: 'white', borderWidth: 0, height: 42, width: "70%",
+          justifyContent: "center", alignItems: "center", alignSelf: "center", borderRadius: 20, marginBottom: 50,
+          }}>
+          
+          <Text style={{color: 'white'}}> Received! </Text>
+          
+        </TouchableOpacity>) : (
+        <TouchableOpacity title="Location Button" onPress={event => {
+          this.setState({ location: true })
+          }} 
+          style={{ backgroundColor: 'royalblue', fontColor: 'white', borderWidth: 0, height: 42, width: "70%",
+          justifyContent: "center", alignItems: "center", alignSelf: "center", borderRadius: 20, marginBottom: 50,
+          }}>
+          
+          <Text style={{color: 'white'}}> Get Location </Text>
+          
+        </TouchableOpacity>)}
+        <TouchableOpacity title="Submit" onPress={this.submit} style={{ backgroundColor: 'royalblue', fontColor: 'white', borderWidth: 0, height: 42, width: "70%",
             justifyContent: "center", alignItems: "center", alignSelf: "center", borderRadius: 20, marginBottom: 50,
           }}>
-          <Text> Submit </Text>
+          <Text style={{color: 'white'}}> Submit </Text>
           </TouchableOpacity>
       </KeyboardAvoidingView>
     );
@@ -148,7 +189,7 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   description: {
-    height: 40,
+    height: 120,
     width: 480,
     borderColor: "gray",
     borderWidth: 1,
@@ -164,5 +205,16 @@ const styles = StyleSheet.create({
     borderTopWidth: 0.45,
     textAlign: "center",
     marginLeft: 10,
+    borderBottomWidth: 0.45,
+  },
+  name: {
+    height: 40,
+    width: 480,
+    borderColor: "gray",
+    borderWidth: 1,
+    borderTopWidth: 0.45,
+    textAlign: "center",
+    marginLeft: 10,
+    borderBottomWidth: 1,
   }
 });

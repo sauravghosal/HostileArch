@@ -38,9 +38,9 @@ export default class Location extends Component {
   render() {
     return (
       <>
-        <Text>
-          {this.state.where.lat}, {this.state.where.lng}
-        </Text>
+        {/* <Text>
+          Location found!
+        </Text> */}
       </>
     );
   }
