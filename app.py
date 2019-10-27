@@ -11,13 +11,18 @@ from email.mime.text import MIMEText
 from email.mime.image     import MIMEImage
 from email.header         import Header
 import base64
-import tweepy
 
 app = Flask(__name__)
 
+dist_id = 'cc6a869374434bee9fefad45e291b779'
+gis = GIS()
+feature_layer = gis.content.get(dist_id).layers[0]
+#item = gis.content.get(dist_id)
+#feature_layer = item.layers[0]
+
 @app.route("/posting_email_info", methods=['POST'])
 def hello():
-    #Get JSON information from request
+    #Get JSON information from request (caption, x and y coordinates, picture, and an optional email)
     msg_body = request.get_json()
     text = msg_body['text']
     loc_x = float(msg_body['x'])
@@ -29,6 +34,7 @@ def hello():
 
     if tup is None:
         return "Representative not found"
+
     else:
         state, district, name = tup
         address = reverseGeocode((loc_y,loc_x))
@@ -41,24 +47,24 @@ def hello():
 
 @app.route("/")
 def first():
-    return "Hello World"
+    return "You have arrived at the homepage for the Fix This Space API."
 
-def getRepresentative(x, y):
+#given a coordinate, this
+def getDistrict(x, y):
     pt = geometry.Point({"x": x, "y": y, "spatialReference" :{"wkid":4326}})
     dist_filter = geometry.filters.intersects(pt)
     q = feature_layer.query(where='1=1', geometry_filter=dist_filter)
     if len(q.features) == 0:
         return None
     else:
+        return q.features[0].attributes['DISTRICT']
+        '''
         attributes = q.features[0].attributes
-        name = attributes['LAST_NAME']
-        state = attributes['STATE_ABBR']
-        district = attributes['CDFIPS']
-        ret_tup = (state, district, name)
-        return ret_tup
+        district = attributes['DISTRICT']
+        return district
+        '''
 
-def sendEmail(filer_email, receiver_email, message):
-
+def sendEmail(receiver_email, filer_email, message):
     sender_email = "hostilearchitectureawareness@gmail.com"
     password = "hostilearch123"
 
@@ -122,30 +128,6 @@ def reverseGeocode(coordinates):
 def decodeAndSaveLocally(encoded_string):
     with open("temp.png", "wb") as fh:
         fh.write(base64.decodebytes(encoded_string))
-def postTweet():
-    twitter_auth_keys = {
-        "consumer_key"        : "REPLACE_THIS_WITH_YOUR_CONSUMER_KEY",
-        "consumer_secret"     : "REPLACE_THIS_WITH_YOUR_CONSUMER_SECRET",
-        "access_token"        : "REPLACE_THIS_WITH_YOUR_ACCESS_TOKEN",
-        "access_token_secret" : "REPLACE_THIS_WITH_YOUR_ACCESS_TOKEN_SECRET"
-    }
-
-    auth = tweepy.OAuthHandler(
-            twitter_auth_keys['consumer_key'],
-            twitter_auth_keys['consumer_secret']
-            )
-    auth.set_access_token(
-            twitter_auth_keys['access_token'],
-            twitter_auth_keys['access_token_secret']
-            )
-    api = tweepy.API(auth)
-
-    tweet = "Another day, another #scifi #book and a cup of #coffee"
-    status = api.update_status(status=tweet)
 
 if __name__ == '__main__':
-    dist_id = 'cc6a869374434bee9fefad45e291b779'
-    gis = GIS()
-    item = gis.content.get(dist_id)
-    feature_layer = item.layers[0]
     app.run(debug=True)
