@@ -14,14 +14,14 @@ import {
 } from "react-native";
 import Location from "./components/Location";
 import Camera from "./components/Camera";
-import BootstrapStyleSheet from 'react-native-bootstrap-styles';
-
+import BootstrapStyleSheet from "react-native-bootstrap-styles";
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.paddingInput = new Animated.Value(0);
     this.state = {
+      submit: "not yet",
       location: false,
       imgBase64: null,
       lng: null,
@@ -71,10 +71,20 @@ export default class App extends Component {
     })
       .then(response => response.text())
       .then(responseJson => {
-        console.log(responseJson);
+        if (responseJson === "Thank you for being a good citizen.") {
+          this.setState({
+            submit: "success"
+          });
+        } else {
+          this.setState({
+            submit: "err"
+          });
+        }
       })
       .catch(error => {
-        console.error(error);
+        this.setState({
+          submit: "err"
+        });
       });
   };
 
@@ -87,30 +97,26 @@ export default class App extends Component {
         enabled
       >
         <Camera changeBase64={this.changeBase64.bind(this)} />
-        {/* <Button
-          title="Get Location"
-          onPress={event => this.setState({ location: true })}
-        ></Button> */}
-        {this.state.location ? (<TouchableOpacity title="Location Button" onPress={event => {
-          this.setState({ location: true })
-          }} 
-          style={{ backgroundColor: 'lightgreen', fontColor: 'white', borderWidth: 0, height: 42, width: "70%",
-          justifyContent: "center", alignItems: "center", alignSelf: "center", borderRadius: 20, marginBottom: 50,
-          }}>
-          
-          <Text style={{color: 'white'}}> Received! </Text>
-          
-        </TouchableOpacity>) : (
-        <TouchableOpacity title="Location Button" onPress={event => {
-          this.setState({ location: true })
-          }} 
-          style={{ backgroundColor: 'royalblue', fontColor: 'white', borderWidth: 0, height: 42, width: "70%",
-          justifyContent: "center", alignItems: "center", alignSelf: "center", borderRadius: 20, marginBottom: 50,
-          }}>
-          
-          <Text style={{color: 'white'}}> Get Location </Text>
-          
-        </TouchableOpacity>)}
+
+        {this.state.location ? (
+          <TouchableOpacity
+            title="Location Button"
+            onPress={this.submit}
+            style={styles.buttonSuccessLocation}
+          >
+            <Text style={{ color: "white" }}> Received! </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            title="Location Button"
+            onPress={event => {
+              this.setState({ location: true });
+            }}
+            style={styles.buttonInitialLocation}
+          >
+            <Text style={{ color: "white" }}> Get Location </Text>
+          </TouchableOpacity>
+        )}
 
         {this.state.location === true && (
           <Location
@@ -135,43 +141,103 @@ export default class App extends Component {
             onChangeText={text => this.setState({ name: text })}
           />
         </View>
-        {/* <Button title="Submit" onPress={this.submit}></Button> */}
-        {this.state.location ? (<TouchableOpacity title="Location Button" onPress={event => {
-          this.setState({ location: true })
-          }} 
-          style={{ backgroundColor: 'lightgreen', fontColor: 'white', borderWidth: 0, height: 42, width: "70%",
-          justifyContent: "center", alignItems: "center", alignSelf: "center", borderRadius: 20, marginBottom: 50,
-          }}>
-          
-          <Text style={{color: 'white'}}> Received! </Text>
-          
-        </TouchableOpacity>) : (
-        <TouchableOpacity title="Location Button" onPress={event => {
-          this.setState({ location: true })
-          }} 
-          style={{ backgroundColor: 'royalblue', fontColor: 'white', borderWidth: 0, height: 42, width: "70%",
-          justifyContent: "center", alignItems: "center", alignSelf: "center", borderRadius: 20, marginBottom: 50,
-          }}>
-          
-          <Text style={{color: 'white'}}> Get Location </Text>
-          
-        </TouchableOpacity>)}
-        <TouchableOpacity title="Submit" onPress={this.submit} style={{ backgroundColor: 'royalblue', fontColor: 'white', borderWidth: 0, height: 42, width: "70%",
-            justifyContent: "center", alignItems: "center", alignSelf: "center", borderRadius: 20, marginBottom: 50,
-          }}>
-          <Text style={{color: 'white'}}> Submit </Text>
+
+        {this.state.submit === "not yet" && (
+          <TouchableOpacity
+            title="Submit"
+            onPress={this.submit}
+            style={styles.buttonInitialSubmit}
+          >
+            <Text style={{ color: "white" }}> Submit </Text>
           </TouchableOpacity>
+        )}
+
+        {this.state.submit === "success" && (
+          <TouchableOpacity title="Submit" style={styles.buttonSuccessSubmit}>
+            <Text style={{ color: "white" }}> Success! </Text>
+          </TouchableOpacity>
+        )}
+
+        {this.state.submit == "err" && (
+          <TouchableOpacity
+            title="Submit"
+            style={styles.buttonError}
+            onPress={this.submit}
+          >
+            <Text style={{ color: "white" }}> Try Again </Text>
+          </TouchableOpacity>
+        )}
       </KeyboardAvoidingView>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  buttonInitialLocation: {
+    backgroundColor: "royalblue",
+    fontColor: "white",
+    borderWidth: 0,
+    height: 42,
+    width: "70%",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    borderRadius: 20,
+    marginBottom: 20
+  },
+  buttonInitialSubmit: {
+    backgroundColor: "royalblue",
+    fontColor: "white",
+    borderWidth: 0,
+    height: 42,
+    width: "70%",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    borderRadius: 20,
+    marginBottom: 55
+  },
+  buttonSuccessLocation: {
+    backgroundColor: "lightgreen",
+    fontColor: "white",
+    borderWidth: 0,
+    height: 42,
+    width: "70%",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    borderRadius: 20,
+    marginBottom: 20
+  },
+  buttonSuccessSubmit: {
+    backgroundColor: "lightgreen",
+    fontColor: "white",
+    borderWidth: 0,
+    height: 42,
+    width: "70%",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    borderRadius: 20,
+    marginBottom: 55
+  },
+  buttonError: {
+    backgroundColor: "red",
+    fontColor: "white",
+    borderWidth: 0,
+    height: 42,
+    width: "70%",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    borderRadius: 20,
+    marginBottom: 55
+  },
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F5FCFF",
+    backgroundColor: "#F5FCFF"
     // backgroundImage: "../assets/blue.png"
   },
   welcome: {
@@ -179,17 +245,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     margin: 10
   },
-  image: {},
   textInput: {
     marginBottom: 50,
     backgroundColor: "#F5FCFF"
   },
-  instructions: {
-    textAlign: "center",
-    marginBottom: 5
-  },
   description: {
-    height: 120,
+    height: 50,
     width: 480,
     borderColor: "gray",
     borderWidth: 1,
@@ -198,23 +259,23 @@ const styles = StyleSheet.create({
     marginLeft: 10
   },
   email: {
-    height: 40,
+    height: 50,
     width: 480,
     borderColor: "gray",
     borderWidth: 1,
     borderTopWidth: 0.45,
     textAlign: "center",
     marginLeft: 10,
-    borderBottomWidth: 0.45,
+    borderBottomWidth: 0.45
   },
   name: {
-    height: 40,
+    height: 50,
     width: 480,
     borderColor: "gray",
     borderWidth: 1,
     borderTopWidth: 0.45,
     textAlign: "center",
     marginLeft: 10,
-    borderBottomWidth: 1,
+    borderBottomWidth: 1
   }
 });
