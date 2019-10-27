@@ -1,5 +1,17 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View, Button, Alert, TextInput, ScrollView, Animated, Keyboard, KeyboardAvoidingView, TextTranslateInput} from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  Alert,
+  TextInput,
+  ScrollView,
+  Animated,
+  Keyboard,
+  KeyboardAvoidingView,
+  TextTranslateInput
+} from "react-native";
 import Location from "./components/Location";
 import Camera from "./components/Camera";
 
@@ -8,13 +20,13 @@ export default class App extends Component {
     super(props);
     this.paddingInput = new Animated.Value(0);
     this.state = {
-      camera: false,
       imgBase64: null,
-      location: false,
-      lat: null,
-      long: null
+      x: null,
+      y: null
     };
   }
+
+  // Setters for imgBase64, changeLong, and changeLat
 
   changeBase64 = newBase64 => {
     this.setState({
@@ -34,45 +46,54 @@ export default class App extends Component {
     });
   };
 
-  handleClick = event => {
-    this.setState({
-      location: true
-    });
-  };
-
-  onChangeText = (text) => {
-    this.setState({
-      description: text
+  submit = () => {
+    console.log("hello!");
+    fetch("https://test-hack-gt-6.appspot.com/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      mess: JSON.stringify({
+        x: this.state.x,
+        y: this.state.y,
+        text: this.state.description,
+        picture_base_64: this.state.imgBase64,
+        sender_email: this.state.senderEmail
+      })
     })
-  }
+      .then(response => response.json())
+      .then(responseJson => {
+        return responseJson.movies;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
 
   render() {
     return (
-      // <ScrollView keyboardDismissMode='on-drag'>
-        <KeyboardAvoidingView keyboardDismissMode='on-drag' style={styles.container} behavior="padding" enabled>
-          <Camera changeBase64={this.changeBase64.bind(this)} />
-          {/* <Button
-            title="Get Location"
-            onPress={e => this.handleClick(e)}
-          ></Button> 
-          {this.state.location === true && (
-            <Location
-              changeLat={this.changeLat.bind(this)}
-              changeLong={this.changeLong.bind(this)}
-            />
-          )}  */}
-          <View style={styles.textInput}>
-            <TextInput placeholder="Enter image description here!"
-              style={styles.description}
-              onChangeText={text => this.onChangeText(text)}
-            />
-            <TextInput placeholder="Enter email address! (Optional)"
-              style={styles.email}
-              onChangeText={text => this.onChangeText(text)}
-            />  
-          </View>    
-        </KeyboardAvoidingView>
-       /* </ScrollView> */
+      <KeyboardAvoidingView
+        keyboardDismissMode="on-drag"
+        style={styles.container}
+        behavior="padding"
+        enabled
+      >
+        <Camera changeBase64={this.changeBase64.bind(this)} />
+        <View style={styles.textInput}>
+          <TextInput
+            placeholder="Enter image description here!"
+            style={styles.description}
+            onChangeText={text => this.setState({ description: text })}
+          />
+          <TextInput
+            placeholder="Enter email address! (Optional)"
+            style={styles.email}
+            onChangeText={text => this.setState({ senderEmail: text })}
+          />
+        </View>
+        <Button title="Submit" onPress={this.submit}></Button>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -89,32 +110,31 @@ const styles = StyleSheet.create({
     textAlign: "center",
     margin: 10
   },
-  image: {
-  },
+  image: {},
   textInput: {
     marginBottom: 50,
-    backgroundColor: '#F5FCFF'
+    backgroundColor: "#F5FCFF"
   },
   instructions: {
     textAlign: "center",
     marginBottom: 5
   },
   description: {
-    height: 40, 
+    height: 40,
     width: 480,
-    borderColor: 'gray', 
+    borderColor: "gray",
     borderWidth: 1,
     borderBottomWidth: 0.45,
     textAlign: "center",
     marginLeft: 10
   },
   email: {
-    height: 40, 
+    height: 40,
     width: 480,
-    borderColor: 'gray', 
+    borderColor: "gray",
     borderWidth: 1,
     borderTopWidth: 0.45,
     textAlign: "center",
-    marginLeft: 10,
+    marginLeft: 10
   }
 });

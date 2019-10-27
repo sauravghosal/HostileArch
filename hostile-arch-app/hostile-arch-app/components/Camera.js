@@ -55,7 +55,6 @@ export default class Camera extends React.Component {
             source={{ uri: this.state.image }}
           />
         )}
-        {console.log(this.state.image)}
         <View style={styles.row}>
           <Button title="Camera" onPress={this.takePicture}>
             Camera
@@ -83,6 +82,6 @@ const styles = StyleSheet.create({
     resizeMode: "contain"
   },
   row: {
-    flexDirection: 'row',
+    flexDirection: "row"
   }
 });
