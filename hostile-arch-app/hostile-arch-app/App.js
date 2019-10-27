@@ -14,6 +14,8 @@ import {
 } from "react-native";
 import Location from "./components/Location";
 import Camera from "./components/Camera";
+import BootstrapStyleSheet from 'react-native-bootstrap-styles';
+
 
 export default class App extends Component {
   constructor(props) {
@@ -85,19 +87,16 @@ export default class App extends Component {
         enabled
       >
         <Camera changeBase64={this.changeBase64.bind(this)} />
-        {/* <Button
+        <Button
           title="Get Location"
           onPress={event => this.setState({ location: true })}
         ></Button>
-        {this.state.location === false && (
-          <ActivityIndicator size="large" color="#0000ff" />
-        )}
         {this.state.location === true && (
           <Location
             changeLat={this.changeLat.bind(this)}
             changeLong={this.changeLong.bind(this)}
           />
-        )} */}
+        )}
         <View style={styles.textInput}>
           <TextInput
             placeholder="Enter image description here!"
@@ -116,8 +115,8 @@ export default class App extends Component {
           />
         </View>
         {/* <Button title="Submit" onPress={this.submit}></Button> */}
-        <TouchableOpacity title="Submit" onPress={this.submit} style={{ borderWidth: 1, height: 42, width: "70%",
-            justifyContent: "center", alignItems: "center", alignSelf: "center", borderRadius: 20, marginBottom: 50, backgroundColor: "F123F0"
+        <TouchableOpacity title="Submit" onPress={this.submit} style={{ backgroundImage: "../assets/blue.png", borderWidth: 1, height: 42, width: "70%",
+            justifyContent: "center", alignItems: "center", alignSelf: "center", borderRadius: 20, marginBottom: 50,
           }}>
           <Text> Submit </Text>
           </TouchableOpacity>
@@ -131,7 +130,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F5FCFF"
+    backgroundColor: "#F5FCFF",
+    // backgroundImage: "../assets/blue.png"
   },
   welcome: {
     fontSize: 20,
@@ -163,6 +163,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderTopWidth: 0.45,
     textAlign: "center",
-    marginLeft: 10
+    marginLeft: 10,
   }
 });
