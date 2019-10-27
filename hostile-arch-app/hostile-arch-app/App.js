@@ -6,7 +6,11 @@ import {
   TextInput,
   Animated,
   KeyboardAvoidingView,
-  ActivityIndicator
+  ActivityIndicator,
+  TouchableHighlight,
+  Text,
+  Image,
+  TouchableOpacity
 } from "react-native";
 import Location from "./components/Location";
 import Camera from "./components/Camera";
@@ -81,7 +85,7 @@ export default class App extends Component {
         enabled
       >
         <Camera changeBase64={this.changeBase64.bind(this)} />
-        <Button
+        {/* <Button
           title="Get Location"
           onPress={event => this.setState({ location: true })}
         ></Button>
@@ -93,7 +97,7 @@ export default class App extends Component {
             changeLat={this.changeLat.bind(this)}
             changeLong={this.changeLong.bind(this)}
           />
-        )}
+        )} */}
         <View style={styles.textInput}>
           <TextInput
             placeholder="Enter image description here!"
@@ -111,7 +115,12 @@ export default class App extends Component {
             onChangeText={text => this.setState({ name: text })}
           />
         </View>
-        <Button title="Submit" onPress={this.submit}></Button>
+        {/* <Button title="Submit" onPress={this.submit}></Button> */}
+        <TouchableOpacity title="Submit" onPress={this.submit} style={{ borderWidth: 1, height: 42, width: "70%",
+            justifyContent: "center", alignItems: "center", alignSelf: "center", borderRadius: 20, marginBottom: 50, backgroundColor: "F123F0"
+          }}>
+          <Text> Submit </Text>
+          </TouchableOpacity>
       </KeyboardAvoidingView>
     );
   }
