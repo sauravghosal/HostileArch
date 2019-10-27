@@ -3,6 +3,7 @@ import { Button, Image, View, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
+import { addOrientationChangeListener } from "expo/build/ScreenOrientation/ScreenOrientation";
 
 export default class Camera extends React.Component {
   constructor(props) {
@@ -56,11 +57,11 @@ export default class Camera extends React.Component {
         )}
         {console.log(this.state.image)}
         <View style={styles.row}>
-          <Button title="Gallery" onPress={this.selectPicture}>
-            Gallery
-          </Button>
           <Button title="Camera" onPress={this.takePicture}>
             Camera
+          </Button>
+          <Button title="Gallery" onPress={this.selectPicture}>
+            Gallery
           </Button>
         </View>
       </View>
@@ -80,5 +81,8 @@ const styles = StyleSheet.create({
     width: null,
     height: null,
     resizeMode: "contain"
+  },
+  row: {
+    flexDirection: 'row',
   }
 });
