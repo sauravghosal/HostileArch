@@ -11,49 +11,60 @@ from email.mime.text import MIMEText
 from email.mime.image     import MIMEImage
 from email.header         import Header
 import base64
-from representatives import emails
+from representatives import dict_of_contacts
 
 app = Flask(__name__)
-
-@app.route("/posting_email_info", methods=['POST'])
-def hello():
-    msg_body = request.get_json()
-    text = msg_body['text']
-    loc_x = float(msg_body['x'])
-    loc_y = float(msg_body['y'])
-    pic_string = bytearray(msg_body['picture_base_64'].encode())
-    pic = decodeAndSaveLocally(pic_string)
-    sender_email = msg_body['sender_email']
-    tup = getRepresentative(loc_x, loc_y)
-    if tup is None:
-        return "Representative not found"
-    else:
-        state, district, name = tup
-        address = reverseGeocode((loc_y,loc_x))
-        if address is None:
-            return "Unable to find address using reverse geocoding"
-        else:
-            send = text + "\n:) it works!\nYour representative is: Representative " + name + " from " + state+ "'s district number " +  district + ".\nYour address is " + address
-            sendEmail("amanj120@gmail.com", send)
-            return "Success" + str(sender_email.find('@') != -1)
+dist_id = 'cc6a869374434bee9fefad45e291b779'
+gis = GIS()
+item = gis.content.get(dist_id)
+feature_layer = item.layers[0]
 
 @app.route("/")
 def first():
     return "Hello World"
 
-def getRepresentative(x, y):
+@app.route("/posting_email_info", methods=['POST'])
+def hello():
+    msg_body = request.get_json()
+    loc_x = float(msg_body['x'])
+    loc_y = float(msg_body['y'])
+    district = getDistrict(loc_x, loc_y)
+    if district is None:
+        return "Representative not found"
+    else:
+        caption = msg_body['text']
+        pic_string = bytearray(msg_body['picture_base_64'].encode())
+        pic = decodeAndSaveLocally(pic_string)
+        sender_email = msg_body['sender_email']
+        address = reverseGeocode((loc_y,loc_x))
+        representative_last_name = dict_of_contacts[district][1]
+        rep_emails = list(dict_of_contacts[district][2:])
+        if address is None:
+            return "Unable to find address using reverse geocoding"
+        else:
+            email_body = generate_body(pic, address, representative_last_name, caption)
+            sendEmail("amanj120@gmail.com", send)
+            return "Success" + str(sender_email.find('@') != -1)
+
+def generate_body(pic, address, representative_last_name, caption):
+
+
+def getDistrict(x, y):
     pt = geometry.Point({"x": x, "y": y, "spatialReference" :{"wkid":4326}})
     dist_filter = geometry.filters.intersects(pt)
     q = feature_layer.query(where='1=1', geometry_filter=dist_filter)
     if len(q.features) == 0:
         return None
     else:
+        return int(q.features[0].attributes['DISTRICT'])
+        '''
         attributes = q.features[0].attributes
         name = attributes['LAST_NAME']
         state = attributes['STATE_ABBR']
         district = attributes['CDFIPS']
         ret_tup = (state, district, name)
         return ret_tup
+        '''
 
 def sendEmail(receiver_email, message):
 
@@ -126,8 +137,4 @@ def decodeAndSaveLocally(encoded_string):
         fh.write(base64.decodebytes(encoded_string))
 
 if __name__ == '__main__':
-    dist_id = 'cc6a869374434bee9fefad45e291b779'
-    gis = GIS()
-    item = gis.content.get(dist_id)
-    feature_layer = item.layers[0]
     app.run(debug=True)
