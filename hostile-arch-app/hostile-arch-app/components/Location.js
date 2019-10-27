@@ -12,7 +12,6 @@ export default class Location extends Component {
   }
   componentDidMount() {
     let geoOptions = {
-      enableHighAccuracy: true,
       timeOut: 20000,
       maximumAge: 60 * 60 * 24
     };
@@ -37,7 +36,13 @@ export default class Location extends Component {
     this.setState({ error: err.message });
   };
   render() {
-    return <></>;
+    return (
+      <>
+        <Text>
+          {this.state.where.lat}, {this.state.where.lng}
+        </Text>
+      </>
+    );
   }
 }
 

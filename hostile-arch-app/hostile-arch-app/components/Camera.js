@@ -1,9 +1,8 @@
 import * as React from "react";
 import { Button, Image, View, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
-import { addOrientationChangeListener } from "expo/build/ScreenOrientation/ScreenOrientation";
+import { Ionicons } from "@expo/vector-icons";
 
 export default class Camera extends React.Component {
   constructor(props) {
@@ -69,6 +68,9 @@ export default class Camera extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  button: {
+    radius: 0.1
+  },
   container: {
     flex: 1,
     justifyContent: "center",

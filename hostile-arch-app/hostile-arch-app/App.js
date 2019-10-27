@@ -5,7 +5,8 @@ import {
   Button,
   TextInput,
   Animated,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  ActivityIndicator
 } from "react-native";
 import Location from "./components/Location";
 import Camera from "./components/Camera";
@@ -15,9 +16,11 @@ export default class App extends Component {
     super(props);
     this.paddingInput = new Animated.Value(0);
     this.state = {
+      location: false,
       imgBase64: null,
-      x: null,
-      y: null
+      lng: null,
+      lat: null,
+      date: new Date()
     };
   }
 
@@ -37,29 +40,32 @@ export default class App extends Component {
 
   changeLong = newLong => {
     this.setState({
-      long: newLong
+      lng: newLong
     });
   };
 
   submit = () => {
-    console.log("hello!");
-    fetch("https://test-hack-gt-6.appspot.com/", {
+    const body = {
+      x: this.state.lng,
+      y: this.state.lat,
+      text: this.state.description,
+      picture_base_64: this.state.imgBase64,
+      sender_email: this.state.senderEmail,
+      name: this.state.name,
+      timestamp: this.state.date
+    };
+    console.log(body);
+    fetch("https://test-hack-gt-6.appspot.com/posting_email_info", {
       method: "POST",
       headers: {
-        Accept: "application/json",
+        Accept: "application/json, text/plain, */*", // It can be used to overcome cors errors
         "Content-Type": "application/json"
       },
-      mess: JSON.stringify({
-        x: this.state.x,
-        y: this.state.y,
-        text: this.state.description,
-        picture_base_64: this.state.imgBase64,
-        sender_email: this.state.senderEmail
-      })
+      body: JSON.stringify(body)
     })
-      .then(response => response.json())
+      .then(response => response.text())
       .then(responseJson => {
-        return responseJson.movies;
+        console.log(responseJson);
       })
       .catch(error => {
         console.error(error);
@@ -75,10 +81,19 @@ export default class App extends Component {
         enabled
       >
         <Camera changeBase64={this.changeBase64.bind(this)} />
-        <Location
-          changeLat={this.changeLat.bind(this)}
-          changeLong={this.changeLong.bind(this)}
-        />
+        <Button
+          title="Get Location"
+          onPress={event => this.setState({ location: true })}
+        ></Button>
+        {this.state.location === false && (
+          <ActivityIndicator size="large" color="#0000ff" />
+        )}
+        {this.state.location === true && (
+          <Location
+            changeLat={this.changeLat.bind(this)}
+            changeLong={this.changeLong.bind(this)}
+          />
+        )}
         <View style={styles.textInput}>
           <TextInput
             placeholder="Enter image description here!"
@@ -89,6 +104,11 @@ export default class App extends Component {
             placeholder="Enter email address! (Optional)"
             style={styles.email}
             onChangeText={text => this.setState({ senderEmail: text })}
+          />
+          <TextInput
+            placeholder="Enter your name"
+            style={styles.email}
+            onChangeText={text => this.setState({ name: text })}
           />
         </View>
         <Button title="Submit" onPress={this.submit}></Button>
