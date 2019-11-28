@@ -5,7 +5,7 @@ This cross-platform app allows users to take a picture of hostile architecture t
 To run the back end for our program, go into the root directory and type into your command line the following:
 
     python app.py
-Make sure you have all the required python modules installed. You can use pip to install there if you haven't already.
+Make sure you have all the required python modules installed. You can use pip to install to install them if you haven't already.
 
 For the front end, go onto your command line and into the hostile-arch-app nested folders and type
 
